@@ -100,6 +100,18 @@ function PlayState:update(dt)
             score = self.score
         })
     end
+
+    -- pause play
+    if love.keyboard.wasPressed('P') or love.keyboard.wasPressed('p') then
+        sounds['music']:pause()
+        gStateMachine:change('pause', {
+            bird = self.bird,
+            pipePairs = self.pipePairs,
+            timer = self.timer,
+            score = self.score,
+            lastY = self.lastY
+         })
+    end
 end
 
 function PlayState:render()
@@ -116,15 +128,32 @@ end
 --[[
     Called when this state is transitioned to from another state.
 ]]
-function PlayState:enter()
+function PlayState:enter(params)
     -- if we're coming from death, restart scrolling
     scrolling = true
+    if params ~= nil then
+        if params.bird ~= nil then
+            self.bird =  params.bird
+        end
+        if params.pipePairs ~= nil then
+            self.pipePairs = params.pipePairs
+        end
+        if params.timer ~= nil then 
+            self.timer = params.timer 
+        end 
+        if params.score ~= nil then
+            self.score = params.score
+        end
+        if params.lastY ~= nil then 
+            self.lastY = params.lastY
+        end
+    end
 end
 
 --[[
     Called when this state changes to another state.
 ]]
 function PlayState:exit()
-    -- stop scrolling for the death/score screen
+    -- stop scrolling for the death/score screen & pause screen
     scrolling = false
 end
